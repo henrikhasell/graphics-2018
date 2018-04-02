@@ -26,11 +26,9 @@ private:
     Shader fragmentShader;
 
     GLuint uniform_projectionMatrix;
-    GLuint uniform_shadowMatrix;
     GLuint uniform_modelMatrix;
     GLuint uniform_viewMatrix;
-    GLuint uniform_viewPosition;
-    GLuint uniform_sunDirection;
+    GLuint uniform_cameraNormal;
 };
 
 #endif

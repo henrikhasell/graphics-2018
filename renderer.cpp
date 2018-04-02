@@ -13,9 +13,7 @@ Renderer::Renderer() :
 
 bool Renderer::initialise()
 {
-    bool success =
-        vertexShader.load("shaders/bump_vertex.glsl") &&
-        fragmentShader.load("shaders/bump_fragment.glsl");
+    bool success = vertexShader.load("shaders/bump_vertex.glsl") && fragmentShader.load("shaders/bump_fragment.glsl");
 
     if(success)
     {
@@ -28,19 +26,19 @@ bool Renderer::initialise()
             program.bindAttributeLocation(2, "in_TexCoord");
 
             uniform_projectionMatrix = program.getUniformLocation("projectionMatrix");
-            uniform_shadowMatrix = program.getUniformLocation("shadowMatrix");
             uniform_modelMatrix = program.getUniformLocation("modelMatrix");
             uniform_viewMatrix = program.getUniformLocation("viewMatrix");
-            uniform_viewPosition = program.getUniformLocation("viewPosition");
-            uniform_sunDirection = program.getUniformLocation("sunDirection");
+            uniform_cameraNormal = program.getUniformLocation("camera_Normal");
 
-            const GLint textureSampler = program.getUniformLocation("textureSampler");
-            const GLint shadowSampler = program.getUniformLocation("shadowSampler");
+            const GLint materialAmbient = program.getUniformLocation("material_Ambient");
+            const GLint materialDiffuse = program.getUniformLocation("material_Diffuse");
+            const GLint materialSpecular = program.getUniformLocation("material_Specular");
 
             program.use();
 
-            glUniform1i(textureSampler, 0);
-            glUniform1i(shadowSampler, 1);
+            glUniform1i(materialAmbient, 0);
+            glUniform1i(materialDiffuse, 1);
+            glUniform1i(materialSpecular, 2);
         }
         else
         {
@@ -62,8 +60,9 @@ void Renderer::projection(float width, float height) const
 void Renderer::view(const Camera &camera) const
 {
     const glm::mat4 matrix = camera.matrix();
+    const glm::vec3 forward = camera.forward();
     glUniformMatrix4fv(uniform_viewMatrix, 1, GL_FALSE, &matrix[0][0]);
-    glUniform3fv(uniform_viewPosition, 1, &camera.position[0]);
+    glUniform3fv(uniform_cameraNormal, 1, &forward[0]);
 }
 
 void Renderer::begin() const
@@ -97,7 +96,7 @@ void Renderer::draw(const Model &model) const // TODO Create transform struct
 {
     for(const std::pair<size_t, Mesh> &texture_mesh_pair : model.meshes)
     {
-        model.materials[texture_mesh_pair.first].diffuse.bind(GL_TEXTURE0);
+        model.materials[texture_mesh_pair.first].bind();
         draw(texture_mesh_pair.second);
     }
 }
