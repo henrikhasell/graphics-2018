@@ -44,7 +44,7 @@ public:
         if(renderer.initialise())
         {
             renderer.projection(800, 600);
-            cube.load("models/sphere.dae");
+            cube.load("models/cube.obj");
             floor.load("models/floor.obj");
         }
     }

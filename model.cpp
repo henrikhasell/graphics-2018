@@ -44,6 +44,14 @@ bool Model::load(const char path[], const aiScene *scene)
             const std::string fullPath = pathString + string.data;
             materials[i].diffuse.load(fullPath.c_str());
         }
+
+        result = scene->mMaterials[i]->GetTexture(aiTextureType_HEIGHT, 0, &string);
+
+        if(result == AI_SUCCESS)
+        {
+            const std::string fullPath = pathString + string.data;
+            materials[i].normal.load(fullPath.c_str());
+        }
     }
 
     meshes.resize(scene->mNumMeshes);

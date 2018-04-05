@@ -30,15 +30,12 @@ bool Renderer::initialise()
             uniform_viewMatrix = program.getUniformLocation("viewMatrix");
             uniform_cameraNormal = program.getUniformLocation("camera_Normal");
 
-            const GLint materialAmbient = program.getUniformLocation("material_Ambient");
-            const GLint materialDiffuse = program.getUniformLocation("material_Diffuse");
-            const GLint materialSpecular = program.getUniformLocation("material_Specular");
-
             program.use();
 
-            glUniform1i(materialAmbient, 0);
-            glUniform1i(materialDiffuse, 1);
-            glUniform1i(materialSpecular, 2);
+            glUniform1i(program.getUniformLocation("material_Ambient"), 0);
+            glUniform1i(program.getUniformLocation("material_Diffuse"), 1);
+            glUniform1i(program.getUniformLocation("material_Specular"), 2);
+            glUniform1i(program.getUniformLocation("material_Normal"), 3);
         }
         else
         {

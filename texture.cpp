@@ -14,7 +14,7 @@
 #   define A_MASK 0xFF000000
 #endif
 
-Texture::Texture(GLfloat r, GLfloat g, GLfloat b)
+Texture::Texture(GLfloat r, GLfloat g, GLfloat b) : Texture()
 {
     colour(r, g, b);
 }
@@ -46,11 +46,14 @@ Texture::Texture() : w(2), h(2)
 Texture::~Texture()
 {
     glDeleteTextures(1, &texture);
+    std::cerr << "Destroying texture " << this << std::endl;
 }
 
 bool Texture::load(const char path[])
 {
     bool result = false;
+
+    std::cout << "Loading " << path << std::endl;
 
     SDL_Surface *surface = IMG_Load(path);
 
@@ -83,13 +86,13 @@ bool Texture::load(SDL_Surface *surface)
         glBindTexture(GL_TEXTURE_2D, texture);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                     optimised->w,
-                     optimised->h, 0,
-                     GL_RGBA, GL_UNSIGNED_BYTE,
-                     optimised->pixels
+            optimised->w,
+            optimised->h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE,
+            optimised->pixels
         );
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glGenerateMipmap(GL_TEXTURE_2D);
 
