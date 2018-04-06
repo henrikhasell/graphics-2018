@@ -46,14 +46,11 @@ Texture::Texture() : w(2), h(2)
 Texture::~Texture()
 {
     glDeleteTextures(1, &texture);
-    std::cerr << "Destroying texture " << this << std::endl;
 }
 
 bool Texture::load(const char path[])
 {
     bool result = false;
-
-    std::cout << "Loading " << path << std::endl;
 
     SDL_Surface *surface = IMG_Load(path);
 

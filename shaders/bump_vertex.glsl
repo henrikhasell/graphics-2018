@@ -21,12 +21,9 @@ uniform mat4 viewMatrix = mat4(1.0);
 void main()
 {
     ex_Position = (modelMatrix * in_Position).xyz;
-    /*ex_Normal = normalize(mat3(modelMatrix) * in_Normal);
+    ex_Normal = normalize(mat3(modelMatrix) * in_Normal);
 	ex_Tangent = normalize(mat3(modelMatrix) * in_Tangent);
-	ex_Bitangent = normalize(mat3(modelMatrix) * in_Bitangent);*/
-    ex_Normal = normalize(vec3(modelMatrix * vec4(in_Normal, 1)));
-	ex_Tangent = normalize(vec3(modelMatrix * vec4(in_Tangent, 1)));
-	ex_Bitangent = normalize(vec3(modelMatrix * vec4(in_Bitangent, 1)));
+	ex_Bitangent = normalize(mat3(modelMatrix) * in_Bitangent);
 	ex_TexCoord = in_TexCoord;
 	ex_ViewPosition = (inverse(viewMatrix) * vec4(0, 0, 0, 1)).xyz;
 
