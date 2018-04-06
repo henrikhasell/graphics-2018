@@ -15,6 +15,8 @@ public:
     void load(
         const GLfloat *vertexArray,
         const GLfloat *normalArray,
+        const GLfloat *tangentArray,
+        const GLfloat *bitangentArray,
         const GLfloat *texCoordArray,
         const GLuint *indexArray,
         GLsizei v_count,
@@ -22,6 +24,8 @@ public:
 private:
     GLuint vertexBuffer;
     GLuint normalBuffer;
+    GLuint tangentBuffer;
+    GLuint bitangentBuffer;
     GLuint texCoordBuffer;
     GLuint indexBuffer;
     GLsizei indices;

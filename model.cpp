@@ -9,7 +9,8 @@
     aiProcess_Triangulate |\
     aiProcess_GenUVCoords |\
     aiProcess_SortByPType |\
-    aiProcess_FlipUVs)
+    aiProcess_FlipUVs |\
+    aiProcess_CalcTangentSpace)
 
 bool Model::load(const char path[])
 {

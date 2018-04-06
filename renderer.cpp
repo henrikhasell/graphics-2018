@@ -23,7 +23,9 @@ bool Renderer::initialise()
         {
             program.bindAttributeLocation(0, "in_Position");
             program.bindAttributeLocation(1, "in_Normal");
-            program.bindAttributeLocation(2, "in_TexCoord");
+            program.bindAttributeLocation(2, "in_Tangent");
+            program.bindAttributeLocation(3, "in_Bitangent");
+            program.bindAttributeLocation(4, "in_TexCoord");
 
             uniform_projectionMatrix = program.getUniformLocation("projectionMatrix");
             uniform_modelMatrix = program.getUniformLocation("modelMatrix");
@@ -68,6 +70,8 @@ void Renderer::begin() const
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
     glClear(GL_DEPTH_BUFFER_BIT);
 }
 
@@ -76,6 +80,8 @@ void Renderer::end() const
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(4);
 }
 
 
@@ -106,8 +112,14 @@ void Renderer::draw(const Mesh &mesh) const
     glBindBuffer(GL_ARRAY_BUFFER, mesh.normalBuffer);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 
+    glBindBuffer(GL_ARRAY_BUFFER, mesh.tangentBuffer);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh.bitangentBuffer);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+
     glBindBuffer(GL_ARRAY_BUFFER, mesh.texCoordBuffer);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
     glDrawElements(GL_TRIANGLES, mesh.indices, GL_UNSIGNED_INT, (GLvoid*)0);
