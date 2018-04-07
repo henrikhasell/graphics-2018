@@ -95,7 +95,15 @@ void Renderer::rotation(const glm::quat &rotation)
     glUniformMatrix4fv(uniform_modelMatrix, 1, GL_FALSE, &glm::toMat4(rotation)[0][0]);
 }
 
-void Renderer::draw(const Model &model) const // TODO Create transform struct
+void Renderer::draw(const Entity &entity) const
+{
+    if(entity.model)
+    {
+
+    }
+}
+
+void Renderer::draw(const Model &model) const
 {
     for(const std::pair<size_t, Mesh> &texture_mesh_pair : model.meshes)
     {

@@ -5,6 +5,7 @@
 #include <GL/gl.h>
 #include <SDL2/SDL.h>
 #include "camera.hpp"
+#include "entity.hpp"
 #include "renderer.hpp"
 
 #define TIME_STEP (1000/60)
@@ -44,7 +45,7 @@ public:
         if(renderer.initialise())
         {
             renderer.projection(800, 600);
-            cube.load("models/cube.obj");
+            cube.load("models/sphere.obj");
             floor.load("models/floor.obj");
         }
     }

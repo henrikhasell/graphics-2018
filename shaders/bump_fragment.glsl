@@ -1,11 +1,5 @@
 #version 140
 
-struct Light
-{
-    vec3 position;
-    vec3 colour;
-};
-
 in vec3 ex_Position;
 in vec3 ex_Normal;
 in vec3 ex_Tangent;
@@ -20,8 +14,7 @@ uniform sampler2D material_Diffuse;
 uniform sampler2D material_Specular;
 uniform sampler2D material_Normal;
 
-uniform Light lights[10];
-
+uniform vec3 light_Ambient = vec3(0.2, 0.2, 0.2);
 uniform vec3 light_Diffuse = vec3(0.6, 0.6, 0.6);
 uniform vec3 light_Specular = vec3(0.2, 0.2, 0.2);
 uniform vec3 light_Position = vec3(4, 4, 4);

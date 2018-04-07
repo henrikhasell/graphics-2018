@@ -2,6 +2,7 @@
 #define RENDERER_HPP
 
 #include "camera.hpp"
+#include "entity.hpp"
 #include "mesh.hpp"
 #include "model.hpp"
 #include "program.hpp"
@@ -18,6 +19,7 @@ public:
     void end() const;
     void position(const glm::vec3 &position);
     void rotation(const glm::quat &rotation);
+    void draw(const Entity &entity) const;
     void draw(const Model &model) const;
     void draw(const Mesh &mesh) const;
 private:
