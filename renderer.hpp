@@ -17,8 +17,6 @@ public:
     void view(const Camera &camera) const;
     void begin() const;
     void end() const;
-    void position(const glm::vec3 &position);
-    void rotation(const glm::quat &rotation);
     void draw(const Entity &entity) const;
     void draw(const Model &model) const;
     void draw(const Mesh &mesh) const;

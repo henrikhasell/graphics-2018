@@ -1,7 +1,4 @@
 #include "renderer.hpp"
-#include <glm/mat4x4.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
 #include <iostream>
 
 Renderer::Renderer() :
@@ -84,22 +81,13 @@ void Renderer::end() const
     glDisableVertexAttribArray(4);
 }
 
-
-void Renderer::position(const glm::vec3 &position) // TODO Create transform struct.
-{
-    glUniformMatrix4fv(uniform_modelMatrix, 1, GL_FALSE, &glm::translate(glm::mat4(1.0f), position)[0][0]);
-}
-
-void Renderer::rotation(const glm::quat &rotation)
-{
-    glUniformMatrix4fv(uniform_modelMatrix, 1, GL_FALSE, &glm::toMat4(rotation)[0][0]);
-}
-
 void Renderer::draw(const Entity &entity) const
 {
     if(entity.model)
     {
-
+        const glm::mat4 matrix = entity.matrix();
+        glUniformMatrix4fv(uniform_modelMatrix, 1, GL_FALSE, &matrix[0][0]);
+        draw(*entity.model);
     }
 }
 

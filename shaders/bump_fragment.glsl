@@ -17,7 +17,7 @@ uniform sampler2D material_Normal;
 uniform vec3 light_Ambient = vec3(0.2, 0.2, 0.2);
 uniform vec3 light_Diffuse = vec3(0.6, 0.6, 0.6);
 uniform vec3 light_Specular = vec3(0.2, 0.2, 0.2);
-uniform vec3 light_Position = vec3(4, 4, 4);
+uniform vec3 light_Position = vec3(0, 3, 0);
 
 uniform vec3 camera_Normal;
 
@@ -39,16 +39,12 @@ void main(void)
     float light_DotProduct = max(0, dot(normal, light_Direction));
 
     vec3 light_ToCamera = normalize(normalize(ex_ViewPosition - ex_Position));
-    vec3 light_Reflection = reflect(-light_Direction, normal );
+    vec3 light_Reflection = reflect(-light_Direction, normal);
     float light_ReflectionAngle = max(0, dot(light_ToCamera, light_Reflection));
 
     vec3 ambient = light_Ambient * texture(material_Diffuse, ex_TexCoord).rgb;
     vec3 diffuse = light_Diffuse * texture(material_Diffuse, ex_TexCoord).rgb * light_DotProduct;
     vec3 specular = light_Specular * texture(material_Specular, ex_TexCoord).rgb * pow(light_ReflectionAngle, 16);
 
-    float light_Radius = 15.0f;
-    float light_Distance = length(light_Position - ex_Position);
-    float light_Attenuation = max(0, light_Radius - light_Distance) / light_Radius;
-
-    out_Colour = vec4(ambient, 1) + (vec4(diffuse, 1) + vec4(specular, 1)) * light_Attenuation;
+    out_Colour = vec4(ambient, 1) + (vec4(diffuse, 1) + vec4(specular, 1));
 }

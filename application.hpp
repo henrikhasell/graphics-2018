@@ -2,6 +2,7 @@
 #define APPLICATION_HPP
 
 #include <iostream>
+#include <vector>
 #include <GL/gl.h>
 #include <SDL2/SDL.h>
 #include "camera.hpp"
@@ -45,8 +46,34 @@ public:
         if(renderer.initialise())
         {
             renderer.projection(800, 600);
-            cube.load("models/sphere.obj");
+            cube.load("models/cube.obj");
             floor.load("models/floor.obj");
+
+            for(float i = 0; i < M_PI * 2.0f; i += M_PI / 4.0f)
+            {
+                constexpr float radius = 8.0f;
+
+                const float x = sinf(i) * radius;
+                const float z = cosf(i) * radius;
+
+                Entity entity;
+
+                entity.position = glm::vec3(x, 1.0f, z);
+                entity.rotation = glm::quat();
+                entity.model = &cube;
+
+                entities.push_back(entity);
+
+            }
+
+            Entity fe;
+
+            fe.position = glm::vec3();
+            fe.rotation = glm::quat();
+            fe.model = &floor;
+
+            entities.push_back(fe);
+
         }
     }
     ~BumpApplication() override
@@ -73,10 +100,10 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         renderer.begin();
         renderer.view(camera);
-        renderer.position(glm::vec3(0, 1, 0));
-        renderer.draw(cube);
-        renderer.position(glm::vec3(0, 0, 0));
-        renderer.draw(floor);
+        for(const Entity &entity : entities)
+        {
+            renderer.draw(entity);
+        }
         renderer.end();
         SDL_GL_SwapWindow(window);
     }
@@ -90,6 +117,7 @@ private:
     Model cube;
     Model floor;
     Camera camera;
+    std::vector<Entity> entities;
 };
 
 #endif
