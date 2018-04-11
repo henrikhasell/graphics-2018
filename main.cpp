@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ode/ode.h>
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -45,34 +46,39 @@ int main(int argc, char *argv[])
                         glEnable(GL_DEPTH_TEST);
                         glEnable(GL_CULL_FACE);
 
-                        bool finished = false;
-                        Application *application = new BumpApplication();
-                        const Uint8 *keyboardState = SDL_GetKeyboardState(nullptr);
-
-                        while(!finished)
+                        if(dInitODE2(0))
                         {
-                            SDL_Event event;
+                            bool finished = false;
+                            Application *application = new BumpApplication();
+                            const Uint8 *keyboardState = SDL_GetKeyboardState(nullptr);
 
-                            while(SDL_PollEvent(&event) != 0)
+                            while(!finished)
                             {
-                                if(event.type == SDL_QUIT)
+                                SDL_Event event;
+
+                                while(SDL_PollEvent(&event) != 0)
                                 {
-                                    finished = true;
-                                    break;
+                                    if(event.type == SDL_QUIT)
+                                    {
+                                        finished = true;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        application->handleEvent(event);
+                                    }
                                 }
-                                else
-                                {
-                                    application->handleEvent(event);
-                                }
+
+                                application->work(keyboardState);
+                                application->renderScene(window);
+
+                                SDL_Delay(20);
                             }
 
-                            application->work(keyboardState);
-                            application->renderScene(window);
-
-                            SDL_Delay(20);
+                            delete application;
+                            dCloseODE();
                         }
 
-                        delete application;
                         SDL_GL_DeleteContext(context);
                     }
                     else

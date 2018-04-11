@@ -51,7 +51,7 @@ bool Model::load(const char path[], const aiScene *scene)
         if(result == AI_SUCCESS)
         {
             const std::string fullPath = pathString + string.data;
-            materials[i].normal.load(fullPath.c_str());
+            materials[i].normal.load(fullPath.c_str(), false);
         }
     }
 

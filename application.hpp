@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include "camera.hpp"
 #include "entity.hpp"
+#include "physics.hpp"
 #include "renderer.hpp"
 
 #define TIME_STEP (1000/60)
@@ -49,30 +50,34 @@ public:
             cube.load("models/cube.obj");
             floor.load("models/floor.obj");
 
-            for(float i = 0; i < M_PI * 2.0f; i += M_PI / 4.0f)
+            for(size_t i = 0; i < 5; i++)
             {
+                const float angle = i * (float)(M_PI / 2.5);
                 constexpr float radius = 8.0f;
 
-                const float x = sinf(i) * radius;
-                const float z = cosf(i) * radius;
+                const float x = sinf(angle) * radius;
+                const float z = cosf(angle) * radius;
 
                 Entity entity;
 
                 entity.position = glm::vec3(x, 1.0f, z);
-                entity.rotation = glm::quat();
                 entity.model = &cube;
+                entity.physics = physics.createCube(glm::vec3(x, 5, z));
 
                 entities.push_back(entity);
 
             }
 
-            Entity fe;
+            Entity floorEntity;
+            floorEntity.position = glm::vec3();
+            floorEntity.rotation = glm::quat();
+            floorEntity.model = &floor;
+            entities.push_back(floorEntity);
 
-            fe.position = glm::vec3();
-            fe.rotation = glm::quat();
-            fe.model = &floor;
-
-            entities.push_back(fe);
+            Entity physicsEntity;
+            physicsEntity.physics = physics.createCube(glm::vec3(0, 5, 0));
+            physicsEntity.model = &cube;
+            entities.push_back(physicsEntity);
 
         }
     }
@@ -111,12 +116,18 @@ protected:
     void step(const Uint8 *keyboardState) override
     {
         camera.handle(keyboardState);
+        physics.step();
+        for(Entity &entity : entities)
+        {
+            entity.step();
+        }
     }
 private:
     Renderer renderer;
     Model cube;
     Model floor;
     Camera camera;
+    Physics physics;
     std::vector<Entity> entities;
 };
 

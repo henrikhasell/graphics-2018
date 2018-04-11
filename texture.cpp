@@ -48,7 +48,7 @@ Texture::~Texture()
     glDeleteTextures(1, &texture);
 }
 
-bool Texture::load(const char path[])
+bool Texture::load(const char path[], bool gamma_correction)
 {
     bool result = false;
 
@@ -56,7 +56,7 @@ bool Texture::load(const char path[])
 
     if(surface)
     {
-        result = load(surface);
+        result = load(surface, gamma_correction);
         SDL_FreeSurface(surface);
     }
 
@@ -68,7 +68,7 @@ bool Texture::load(const char path[])
     return result;
 }
 
-bool Texture::load(SDL_Surface *surface)
+bool Texture::load(SDL_Surface *surface, bool gamma_correction)
 {
     SDL_Surface *optimised = SDL_CreateRGBSurface(0, surface->w, surface->h, 32, R_MASK, G_MASK, B_MASK, A_MASK);
 
@@ -82,7 +82,7 @@ bool Texture::load(SDL_Surface *surface)
 
         glBindTexture(GL_TEXTURE_2D, texture);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+        glTexImage2D(GL_TEXTURE_2D, 0, gamma_correction ? GL_SRGB_ALPHA : GL_RGBA,
             optimised->w,
             optimised->h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE,

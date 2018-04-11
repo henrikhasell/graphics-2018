@@ -15,8 +15,8 @@ uniform sampler2D material_Specular;
 uniform sampler2D material_Normal;
 
 uniform vec3 light_Ambient = vec3(0.2, 0.2, 0.2);
-uniform vec3 light_Diffuse = vec3(0.6, 0.6, 0.6);
-uniform vec3 light_Specular = vec3(0.2, 0.2, 0.2);
+uniform vec3 light_Diffuse = vec3(0.4, 0.4, 0.4);
+uniform vec3 light_Specular = vec3(0.4, 0.4, 0.4);
 uniform vec3 light_Position = vec3(0, 3, 0);
 
 uniform vec3 camera_Normal;
@@ -44,7 +44,7 @@ void main(void)
 
     vec3 ambient = light_Ambient * texture(material_Diffuse, ex_TexCoord).rgb;
     vec3 diffuse = light_Diffuse * texture(material_Diffuse, ex_TexCoord).rgb * light_DotProduct;
-    vec3 specular = light_Specular * texture(material_Specular, ex_TexCoord).rgb * pow(light_ReflectionAngle, 16);
+    vec3 specular = light_Specular * texture(material_Specular, ex_TexCoord).rgb * pow(light_ReflectionAngle, 128);
 
-    out_Colour = vec4(ambient, 1) + (vec4(diffuse, 1) + vec4(specular, 1));
+    out_Colour = vec4(pow(ambient + specular + diffuse, vec3(1/2.2)), 1);
 }
