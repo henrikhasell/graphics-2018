@@ -15,10 +15,13 @@ public:
     Physics();
     ~Physics();
     void step();
+    void select(const glm::vec3 &position, const glm::vec3 &direction);
     dBodyID createCube(const glm::vec3 &position);
 private:
     dWorldID world;
     dSpaceID space;
+    dGeomID selection;
+    dGeomID plane;
     dJointGroupID contactGroup;
 };
 

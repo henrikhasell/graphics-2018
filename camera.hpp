@@ -15,6 +15,7 @@ struct Camera
 
     glm::mat4 matrix() const;
 	glm::vec3 forward() const;
+	glm::vec3 project(const glm::vec2 &position, const glm::vec4 &viewport);
 
 	glm::vec3 position;
 	float pitch;

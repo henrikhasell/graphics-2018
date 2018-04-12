@@ -44,7 +44,7 @@ void main(void)
 
     vec3 ambient = light_Ambient * texture(material_Diffuse, ex_TexCoord).rgb;
     vec3 diffuse = light_Diffuse * texture(material_Diffuse, ex_TexCoord).rgb * light_DotProduct;
-    vec3 specular = light_Specular * texture(material_Specular, ex_TexCoord).rgb * pow(light_ReflectionAngle, 128);
+    vec3 specular = light_Specular * texture(material_Specular, ex_TexCoord).rgb * pow(light_ReflectionAngle, 64);
 
     out_Colour = vec4(pow(ambient + specular + diffuse, vec3(1/2.2)), 1);
 }

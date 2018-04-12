@@ -42,6 +42,7 @@ class BumpApplication : public Application
 public:
     BumpApplication()
     {
+
         std::cout << "Initialising bump application..." << std::endl;
 
         if(renderer.initialise())
@@ -50,9 +51,9 @@ public:
             cube.load("models/cube.obj");
             floor.load("models/floor.obj");
 
-            for(size_t i = 0; i < 5; i++)
+            for(size_t i = 0; i < 6; i++)
             {
-                const float angle = i * (float)(M_PI / 2.5);
+                const float angle = i * (float)(M_PI / 3);
                 constexpr float radius = 8.0f;
 
                 const float x = sinf(angle) * radius;
@@ -65,7 +66,6 @@ public:
                 entity.physics = physics.createCube(glm::vec3(x, 5, z));
 
                 entities.push_back(entity);
-
             }
 
             Entity floorEntity;
@@ -91,6 +91,7 @@ public:
         {
             case SDL_MOUSEMOTION:
                 camera.handle(event.motion);
+                handleEvent(event.motion);
                 break;
             case SDL_KEYDOWN:
                 if(event.key.keysym.sym == SDLK_LCTRL && !event.key.repeat)
@@ -99,6 +100,10 @@ public:
                 }
                 break;
         }
+    }
+    void handleEvent(const SDL_MouseMotionEvent &event)
+    {
+
     }
     void renderScene(SDL_Window *window) override
     {

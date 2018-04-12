@@ -1,16 +1,20 @@
 #include "physics.hpp"
+#include <iostream>
 
 Physics::Physics()
 {
     world = dWorldCreate();
     space = dHashSpaceCreate(0);
+    selection = dCreateRay(space, 100.0f);
     contactGroup = dJointGroupCreate(0);
+
+
 
     dWorldSetGravity(world, 0.0f, -9.8f, 0.0f);
     dWorldSetCFM(world, 1e-5f);
     dWorldSetAutoDisableFlag(world, 1);
 
-    dCreatePlane(space, 0.0f, 1.0f, 0.0f, 0.0f);
+    plane = dCreatePlane(space, 0.0f, 1.0f, 0.0f, 0.0f);
 }
 
 Physics::~Physics()
@@ -26,6 +30,7 @@ void Physics::nearCallback(void *data, dGeomID o1, dGeomID o2)
 
     dBodyID b1 = dGeomGetBody(o1);
     dBodyID b2 = dGeomGetBody(o2);
+
 
     dContact contact[MAX_CONTACTS];
 
@@ -43,8 +48,24 @@ void Physics::nearCallback(void *data, dGeomID o1, dGeomID o2)
 
     for(int i = 0; i < number_collisions; i++)
     {
-        dJointID c = dJointCreateContact(instance->world, instance->contactGroup, contact + i);
-        dJointAttach(c, b1, b2);
+        if(o1 != instance->selection && o2 != instance->selection)
+        {
+            dJointID c = dJointCreateContact(instance->world, instance->contactGroup, contact + i);
+            dJointAttach(c, b1, b2);
+        }
+        else
+        {
+            if(o1 == instance->selection)
+            {
+                if(o2 != instance->plane)
+                    std::cout << "Ray is colliding with " << o2 << "(" << number_collisions << ")" << std::endl; break;
+            }
+            if(o2 == instance->selection)
+            {
+                if(o1 != instance->plane)
+                    std::cout << "Ray is colliding with " << o1 << "(" << number_collisions << ")" << std::endl; break;
+            }
+        }
     }
 }
 
@@ -53,6 +74,11 @@ void Physics::step()
     dSpaceCollide(space, this, &nearCallback);
     dWorldQuickStep(world, 1.0f/60.0f);
     dJointGroupEmpty(contactGroup);
+}
+
+void Physics::select(const glm::vec3 &position, const glm::vec3 &direction)
+{
+    dGeomRaySet(selection, position.x, position.y, position.z, direction.x, direction.y, direction.z);
 }
 
 dBodyID Physics::createCube(const glm::vec3 &position)
