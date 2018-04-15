@@ -90,5 +90,5 @@ glm::vec3 Camera::forward() const
 
 glm::vec3 Camera::project(const glm::vec2 &position, const glm::vec4 &viewport)
 {
-    return glm::unProject(glm::vec3(position, 0), matrix(), glm::perspective(45.0f, viewport[3] / viewport[4], 0.1f, 1000.0f), viewport);
+    return glm::unProject(glm::vec3(position, 0.1f), matrix(), glm::perspective(45.0f, viewport[2] / viewport[3], 0.1f, 1000.0f), viewport);
 }

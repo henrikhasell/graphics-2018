@@ -8,6 +8,7 @@
 #include "camera.hpp"
 #include "entity.hpp"
 #include "physics.hpp"
+#include "orthographic.hpp"
 #include "renderer.hpp"
 
 #define TIME_STEP (1000/60)
@@ -45,15 +46,17 @@ public:
 
         std::cout << "Initialising bump application..." << std::endl;
 
-        if(renderer.initialise())
+        if(orthographic.initialise() && renderer.initialise())
         {
+            orthographic.projection(800, 600);
             renderer.projection(800, 600);
+
             cube.load("models/cube.obj");
             floor.load("models/floor.obj");
 
             for(size_t i = 0; i < 6; i++)
             {
-                const float angle = i * (float)(M_PI / 3);
+                const float angle = i * (float)(M_PI / 3.0);
                 constexpr float radius = 8.0f;
 
                 const float x = sinf(angle) * radius;
@@ -79,6 +82,11 @@ public:
             physicsEntity.model = &cube;
             entities.push_back(physicsEntity);
 
+            shape.square(0, 0, 100, 100);
+            sprite.shape = &shape;
+            sprite.position.x = 0;
+            sprite.position.y = 0;
+
         }
     }
     ~BumpApplication() override
@@ -103,7 +111,15 @@ public:
     }
     void handleEvent(const SDL_MouseMotionEvent &event)
     {
+        int w;
+        int h;
 
+        SDL_GetWindowSize(SDL_GetWindowFromID(event.windowID), &w, &h);
+
+        const float x = ((float)event.x / w) * 2.0f - 1.0f;
+        const float y = ((float)event.x / h) * 2.0f - 1.0f;
+
+        physics.select(camera.project(glm::vec2(x, y), glm::vec4(0, 0, w, h)), camera);
     }
     void renderScene(SDL_Window *window) override
     {
@@ -115,6 +131,9 @@ public:
             renderer.draw(entity);
         }
         renderer.end();
+        orthographic.begin();
+        orthographic.draw(shape);
+        orthographic.end();
         SDL_GL_SwapWindow(window);
     }
 protected:
@@ -128,7 +147,10 @@ protected:
         }
     }
 private:
+    Orthographic orthographic;
     Renderer renderer;
+    Shape shape;
+    Sprite sprite;
     Model cube;
     Model floor;
     Camera camera;

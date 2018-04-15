@@ -55,6 +55,7 @@ void Physics::nearCallback(void *data, dGeomID o1, dGeomID o2)
         }
         else
         {
+            /*
             if(o1 == instance->selection)
             {
                 if(o2 != instance->plane)
@@ -65,6 +66,7 @@ void Physics::nearCallback(void *data, dGeomID o1, dGeomID o2)
                 if(o1 != instance->plane)
                     std::cout << "Ray is colliding with " << o1 << "(" << number_collisions << ")" << std::endl; break;
             }
+            */
         }
     }
 }
@@ -76,9 +78,17 @@ void Physics::step()
     dJointGroupEmpty(contactGroup);
 }
 
-void Physics::select(const glm::vec3 &position, const glm::vec3 &direction)
+void Physics::select(const glm::vec3 &position, const Camera &camera)
 {
-    dGeomRaySet(selection, position.x, position.y, position.z, direction.x, direction.y, direction.z);
+    const glm::vec3 direction = glm::normalize(position - camera.position);
+
+    dGeomRaySet(selection,
+        camera.position.x,
+        camera.position.y,
+        camera.position.z,
+        direction.x,
+        direction.y,
+        direction.z);
 }
 
 dBodyID Physics::createCube(const glm::vec3 &position)

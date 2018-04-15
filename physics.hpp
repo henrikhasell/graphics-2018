@@ -3,6 +3,7 @@
 
 #include <glm/vec3.hpp>
 #include <ode/ode.h>
+#include "camera.hpp"
 
 #define MAX_CONTACTS 32
 
@@ -15,7 +16,7 @@ public:
     Physics();
     ~Physics();
     void step();
-    void select(const glm::vec3 &position, const glm::vec3 &direction);
+    void select(const glm::vec3 &position, const Camera &camera);
     dBodyID createCube(const glm::vec3 &position);
 private:
     dWorldID world;
