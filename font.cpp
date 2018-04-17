@@ -25,7 +25,7 @@ bool Font::load(const char path[], int size)
 
     if(font == nullptr)
     {
-        std::cerr << "Failed to open font " << path << std::endl;
+        std::cerr << "Failed to load " << path << ": " << TTF_GetError() << std::endl;
     }
 
     return font != nullptr;

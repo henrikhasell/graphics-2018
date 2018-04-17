@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include "camera.hpp"
 #include "entity.hpp"
+#include "font.hpp"
 #include "physics.hpp"
 #include "orthographic.hpp"
 #include "renderer.hpp"
@@ -53,6 +54,7 @@ public:
 
             cube.load("models/cube.obj");
             floor.load("models/floor.obj");
+            font.load("fonts/NanumGothic-Regular.ttf", 40);
 
             for(size_t i = 0; i < 6; i++)
             {
@@ -153,6 +155,7 @@ private:
     Sprite sprite;
     Model cube;
     Model floor;
+    Font font;
     Camera camera;
     Physics physics;
     std::vector<Entity> entities;
