@@ -75,11 +75,8 @@ void Orthographic::draw(const Shape &shape) const
 
 void Orthographic::draw(const Sprite &sprite) const
 {
-    if(sprite.shape)
-    {
         const glm::mat4 modelMatrix = sprite.modelMatrix();
         glUniformMatrix4fv(uniform_modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
         sprite.texture.bind();
-        draw(*sprite.shape);
-    }
+        draw(sprite.shape);
 }

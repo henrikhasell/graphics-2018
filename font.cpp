@@ -31,11 +31,7 @@ bool Font::load(const char path[], int size)
     return font != nullptr;
 }
 
-/*
-void Font::render(
-        Shape &shape,
-        Texture &texture,
-        const char string[])
+bool Font::render(Texture &texture, const char string[])
 {
     SDL_Colour colour;
 
@@ -48,12 +44,8 @@ void Font::render(
 
     if(surface)
     {
-        shape.square(
-                0.0f,
-                0.0f,
-                (GLfloat)surface->w,
-                (GLfloat)surface->h);
         texture.load(surface);
     }
+
+    return surface != nullptr;
 }
-*/

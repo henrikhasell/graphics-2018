@@ -84,8 +84,7 @@ public:
             physicsEntity.model = &cube;
             entities.push_back(physicsEntity);
 
-            shape.square(0, 0, 100, 100);
-            sprite.shape = &shape;
+            sprite.text(font, "Hello, world!");
             sprite.position.x = 0;
             sprite.position.y = 0;
 
@@ -118,10 +117,10 @@ public:
 
         SDL_GetWindowSize(SDL_GetWindowFromID(event.windowID), &w, &h);
 
-        const float x = ((float)event.x / w) * 2.0f - 1.0f;
-        const float y = ((float)event.x / h) * 2.0f - 1.0f;
+        const float x = (float)event.x;
+        const float y = (float)(h - event.y);
 
-        physics.select(camera.project(glm::vec2(x, y), glm::vec4(0, 0, w, h)), camera);
+        physics.select(camera.project(glm::vec2(x, y), glm::vec4(0.0f, 0.0f, 800.0f, 600.0f)), camera);
     }
     void renderScene(SDL_Window *window) override
     {
@@ -134,7 +133,7 @@ public:
         }
         renderer.end();
         orthographic.begin();
-        orthographic.draw(shape);
+        orthographic.draw(sprite);
         orthographic.end();
         SDL_GL_SwapWindow(window);
     }
@@ -151,7 +150,6 @@ protected:
 private:
     Orthographic orthographic;
     Renderer renderer;
-    Shape shape;
     Sprite sprite;
     Model cube;
     Model floor;

@@ -5,15 +5,16 @@
 #include <glm/vec2.hpp>
 #include "texture.hpp"
 #include "shape.hpp"
+#include "font.hpp"
 
 struct Sprite
 {
-    Sprite();
+    bool text(Font &font, const char format[]);
     glm::mat4 modelMatrix() const;
     glm::vec2 position;
 
     Texture texture;
-    Shape *shape;
+    Shape shape;
 };
 
 #endif

@@ -1,7 +1,7 @@
 #include "camera.hpp"
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
-
+#include <iostream>
 Camera::Camera() : position(3.0f, 3.0f, 3.0f), pitch(0), yaw(0)
 {
     look(0.0f, 0.0f, 0.0f);
@@ -90,5 +90,5 @@ glm::vec3 Camera::forward() const
 
 glm::vec3 Camera::project(const glm::vec2 &position, const glm::vec4 &viewport)
 {
-    return glm::unProject(glm::vec3(position, 0.1f), matrix(), glm::perspective(45.0f, viewport[2] / viewport[3], 0.1f, 1000.0f), viewport);
+    return glm::unProject(glm::vec3(position, 0.0f), matrix(), glm::perspective(45.0f, viewport[2] / viewport[3], 0.1f, 1000.0f), viewport);
 }
