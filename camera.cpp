@@ -88,7 +88,22 @@ glm::vec3 Camera::forward() const
     return glm::vec3(cos(pitch) * sin(yaw), sin(pitch), cos(pitch) * cos(yaw));
 }
 
-glm::vec3 Camera::project(const glm::vec2 &position, const glm::vec4 &viewport)
+glm::vec3 Camera::unProject(const glm::vec2 &position, const glm::vec4 &viewport)
 {
-    return glm::unProject(glm::vec3(position, 0.0f), matrix(), glm::perspective(45.0f, viewport[2] / viewport[3], 0.1f, 1000.0f), viewport);
+    return glm::unProject(
+            glm::vec3(position, 0.0f),
+            matrix(),
+            glm::perspective(45.0f, viewport[2] / viewport[3], 0.1f, 1000.0f),
+            viewport);
+}
+
+glm::vec2 Camera::project(const glm::vec3 &position, const glm::vec4 &viewport)
+{
+    const glm::vec2 project = glm::project(
+            position,
+            matrix(),
+            glm::perspective(45.0f, viewport[2] / viewport[3], 0.1f, 1000.0f),
+            viewport);
+
+    return glm::vec2(project.x, viewport[3] - project.y);
 }

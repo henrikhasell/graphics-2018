@@ -54,7 +54,8 @@ public:
 
             cube.load("models/cube.obj");
             floor.load("models/floor.obj");
-            font.load("fonts/NanumGothic-Regular.ttf", 40);
+            largeFont.load("fonts/NanumGothic-Regular.ttf", 22);
+            smallFont.load("fonts/NanumGothic-Regular.ttf", 12);
 
             for(size_t i = 0; i < 6; i++)
             {
@@ -65,6 +66,22 @@ public:
                 const float z = cosf(angle) * radius;
 
                 Entity entity;
+
+                switch(i)
+                {
+                    case 0: entity.name = "Alpha";
+                        break;
+                    case 1: entity.name = "Bravo";
+                        break;
+                    case 2: entity.name = "Charlie";
+                        break;
+                    case 3: entity.name = "Delta";
+                        break;
+                    case 4: entity.name = "Echo";
+                        break;
+                    case 5: entity.name = "Foxtrot";
+                        break;
+                }
 
                 entity.position = glm::vec3(x, 1.0f, z);
                 entity.model = &cube;
@@ -80,11 +97,12 @@ public:
             entities.push_back(floorEntity);
 
             Entity physicsEntity;
+            physicsEntity.name = "Middle";
             physicsEntity.physics = physics.createCube(glm::vec3(0, 5, 0));
             physicsEntity.model = &cube;
             entities.push_back(physicsEntity);
 
-            sprite.text(font, "Hello, world!");
+            sprite.text(largeFont, "Hello, world!");
             sprite.position.x = 0;
             sprite.position.y = 0;
 
@@ -120,7 +138,7 @@ public:
         const float x = (float)event.x;
         const float y = (float)(h - event.y);
 
-        physics.select(camera.project(glm::vec2(x, y), glm::vec4(0.0f, 0.0f, 800.0f, 600.0f)), camera);
+        physics.select(camera.unProject(glm::vec2(x, y), glm::vec4(0.0f, 0.0f, 800.0f, 600.0f)), camera);
     }
     void renderScene(SDL_Window *window) override
     {
@@ -134,6 +152,15 @@ public:
         renderer.end();
         orthographic.begin();
         orthographic.draw(sprite);
+        for(const Entity &entity : entities)
+        {
+            Sprite textSprite;
+            textSprite.text(smallFont, entity.name.c_str());
+            textSprite.position = camera.project(entity.position, glm::vec4(0.0f, 0.0f, 800.0f, 600.0f));
+            textSprite.position.x -= textSprite.texture.getW() / 2;
+            textSprite.position.y -= textSprite.texture.getH() / 2;
+            orthographic.draw(textSprite);
+        }
         orthographic.end();
         SDL_GL_SwapWindow(window);
     }
@@ -153,7 +180,8 @@ private:
     Sprite sprite;
     Model cube;
     Model floor;
-    Font font;
+    Font largeFont;
+    Font smallFont;
     Camera camera;
     Physics physics;
     std::vector<Entity> entities;
