@@ -34,28 +34,57 @@ void Shape::initialise(
 }
 
 void Shape::square(
-	GLfloat x,
-	GLfloat y,
-	GLfloat width,
-	GLfloat height)
+        GLfloat x,
+        GLfloat y,
+        GLfloat width,
+        GLfloat height)
 {
-	const GLfloat vertexData[4 * 2] = {
-		x,         y,          // Top left.
-		x + width, y,          // Top right.
-		x,         y + height, // Bottom left.
-		x + width, y + height  // Bottom right.
-	};
+    const GLfloat vertexData[4 * 2] = {
+            x,         y,          // Top left.
+            x + width, y,          // Top right.
+            x,         y + height, // Bottom left.
+            x + width, y + height  // Bottom right.
+    };
 
-	const GLfloat textureData[4 * 2] = {
-		0.0f, 0.0f,
-		1.0f, 0.0f,
-		0.0f, 1.0f,
-		1.0f, 1.0f
-	};
+    const GLfloat textureData[4 * 2] = {
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f
+    };
 
-	const GLuint indexData[6] = {
-		0, 2, 1, 1, 2, 3
-	};
+    const GLuint indexData[4] = {
+            0, 2, 1, 3
+    };
 
-	initialise(vertexData, textureData, indexData, 4, 6);
+    initialise(vertexData, textureData, indexData, 4, 4);
+    drawingMode = GL_TRIANGLE_STRIP;
+}
+
+void Shape::outline(
+        GLfloat x,
+        GLfloat y,
+        GLfloat width,
+        GLfloat height)
+{
+    const GLfloat vertexData[4 * 2] = {
+            x,         y,          // Top left.
+            x + width, y,          // Top right.
+            x,         y + height, // Bottom left.
+            x + width, y + height  // Bottom right.
+    };
+
+    const GLfloat textureData[4 * 2] = {
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f
+    };
+
+    const GLuint indexData[4] = {
+            0, 1, 3, 2
+    };
+
+    initialise(vertexData, textureData, indexData, 4, 6);
+    drawingMode = GL_LINE_LOOP;
 }

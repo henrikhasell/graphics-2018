@@ -102,12 +102,12 @@ bool Texture::load(SDL_Surface *surface, bool gamma_correction)
     return optimised != NULL;
 }
 
-void Texture::colour(GLfloat r, GLfloat g, GLfloat b)
+void Texture::colour(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
     glBindTexture(GL_TEXTURE_2D, texture);
 
     const GLfloat pixels[] = {
-            r, g, b, 0xff
+            r, g, b, a
     };
 
     glTexImage2D(GL_TEXTURE_2D, 0, 4,
@@ -131,12 +131,12 @@ void Texture::bind(GLenum texture) const
     glBindTexture(GL_TEXTURE_2D, this->texture);
 }
 
-int Texture::getW()
+int Texture::getW() const
 {
     return w;
 }
 
-int Texture::getH()
+int Texture::getH() const
 {
     return h;
 }

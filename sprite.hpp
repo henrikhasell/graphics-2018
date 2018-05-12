@@ -11,8 +11,8 @@ struct Sprite
 {
     bool text(Font &font, const char format[]);
     glm::mat4 modelMatrix() const;
-    glm::vec2 position;
 
+    glm::vec2 position;
     Texture texture;
     Shape shape;
 };

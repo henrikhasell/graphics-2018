@@ -53,12 +53,14 @@ void Orthographic::begin() const
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glClear(GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
 }
 
 void Orthographic::end() const
 {
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Orthographic::draw(const Shape &shape) const
@@ -70,13 +72,13 @@ void Orthographic::draw(const Shape &shape) const
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.indexBuffer);
-    glDrawElements(GL_TRIANGLES, shape.size, GL_UNSIGNED_INT, (void*)0);
+    glDrawElements(shape.drawingMode, shape.size, GL_UNSIGNED_INT, (void*)0);
 }
 
 void Orthographic::draw(const Sprite &sprite) const
 {
-        const glm::mat4 modelMatrix = sprite.modelMatrix();
-        glUniformMatrix4fv(uniform_modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
-        sprite.texture.bind();
-        draw(sprite.shape);
+    const glm::mat4 modelMatrix = sprite.modelMatrix();
+    glUniformMatrix4fv(uniform_modelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
+    sprite.texture.bind();
+    draw(sprite.shape);
 }

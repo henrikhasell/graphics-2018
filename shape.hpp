@@ -20,7 +20,13 @@ public:
         GLfloat y,
         GLfloat width,
         GLfloat height);
+    void outline(
+        GLfloat x,
+        GLfloat y,
+        GLfloat width,
+        GLfloat height);
 private:
+    GLenum drawingMode;
     GLuint vertexBuffer;
     GLuint textureBuffer;
     GLuint indexBuffer;

@@ -2,6 +2,7 @@
 #define APPLICATION_HPP
 
 #include <iostream>
+#include <list>
 #include <vector>
 #include <GL/gl.h>
 #include <SDL2/SDL.h>
@@ -13,6 +14,90 @@
 #include "renderer.hpp"
 
 #define TIME_STEP (1000/60)
+
+struct Selection
+{
+    Selection() : a(0, 0), b(0, 0)
+    {
+        fillSprite.texture.colour(
+                0.3f,
+                0.3f,
+                1.0f,
+                0.2f);
+
+        lineSprite.texture.colour(
+                0.3f,
+                0.3f,
+                1.0f);
+    }
+
+    void handle(const SDL_MouseButtonEvent &event)
+    {
+        if(event.button == SDL_BUTTON_LEFT && event.state == SDL_PRESSED)
+        {
+            a = b = glm::vec2(event.x, event.y);
+        }
+        else
+        {
+            a = b = glm::vec2(0, 0);
+        }
+        updateSprite();
+    }
+
+    void handle(const SDL_MouseMotionEvent &event)
+    {
+        if(!SDL_GetRelativeMouseMode() && event.state & SDL_BUTTON_LMASK)
+        {
+            b = glm::vec2(event.x, event.y);
+            updateSprite();
+        }
+    }
+
+    void selectEntities(const Camera &camera, const std::vector<Entity> &entities)
+    {
+        selected.clear();
+
+        const glm::vec2 min(a.x < b.x ? a.x : b.x, a.y < b.y ? a.y : b.y);
+        const glm::vec2 max(a.x > b.x ? a.x : b.x, a.y > b.y ? a.y : b.y);
+
+        for(const Entity &entity : entities)
+        {
+            glm::vec2 projection = camera.project(entity.position, glm::vec4(0, 0, 800, 600));
+
+            if(projection.x < min.x || projection.x > max.x)
+            {
+                continue;
+            }
+
+            if(projection.y < min.y || projection.y > max.y)
+            {
+                continue;
+            }
+
+            selected.push_back(&entity);
+        }
+    }
+
+    void updateSprite()
+    {
+        const glm::vec2 min(a.x < b.x ? a.x : b.x, a.y < b.y ? a.y : b.y);
+        const glm::vec2 max(a.x > b.x ? a.x : b.x, a.y > b.y ? a.y : b.y);
+
+        const GLfloat w = max.x - min.x;
+        const GLfloat h = max.y - min.y;
+
+        fillSprite.shape.square(min.x, min.y, w, h);
+        lineSprite.shape.outline(min.x, min.y, w, h);
+    }
+
+    Sprite fillSprite;
+    Sprite lineSprite;
+
+    glm::vec2 a;
+    glm::vec2 b;
+
+    std::list<const Entity*> selected;
+};
 
 class Application
 {
@@ -116,7 +201,14 @@ public:
     {
         switch(event.type)
         {
+            case SDL_MOUSEBUTTONDOWN:
+                selection.handle(event.button);
+                break;
+            case SDL_MOUSEBUTTONUP:
+                selection.handle(event.button);
+                break;
             case SDL_MOUSEMOTION:
+                selection.handle(event.motion);
                 camera.handle(event.motion);
                 handleEvent(event.motion);
                 break;
@@ -161,6 +253,8 @@ public:
             textSprite.position.y -= textSprite.texture.getH() / 2;
             orthographic.draw(textSprite);
         }
+        orthographic.draw(selection.fillSprite);
+        orthographic.draw(selection.lineSprite);
         orthographic.end();
         SDL_GL_SwapWindow(window);
     }
@@ -185,6 +279,7 @@ private:
     Camera camera;
     Physics physics;
     std::vector<Entity> entities;
+    Selection selection;
 };
 
 #endif
