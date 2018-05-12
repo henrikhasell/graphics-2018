@@ -53,6 +53,7 @@ void Physics::nearCallback(void *data, dGeomID o1, dGeomID o2)
             dJointID c = dJointCreateContact(instance->world, instance->contactGroup, contact + i);
             dJointAttach(c, b1, b2);
         }
+            /*
         else
         {
             if(o1 == instance->selection)
@@ -66,6 +67,7 @@ void Physics::nearCallback(void *data, dGeomID o1, dGeomID o2)
                     std::cout << "Ray is colliding with " << o1 << "(" << number_collisions << ")" << std::endl; break;
             }
         }
+             */
     }
 }
 

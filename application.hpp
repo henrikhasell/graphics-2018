@@ -76,6 +76,11 @@ struct Selection
 
             selected.push_back(&entity);
         }
+
+        for(const Entity *entity : selected)
+        {
+            std::cout << "Selected " << entity->name << std::endl;
+        }
     }
 
     void updateSprite()
@@ -205,6 +210,7 @@ public:
                 selection.handle(event.button);
                 break;
             case SDL_MOUSEBUTTONUP:
+                selection.selectEntities(camera, entities);
                 selection.handle(event.button);
                 break;
             case SDL_MOUSEMOTION:
@@ -222,6 +228,7 @@ public:
     }
     void handleEvent(const SDL_MouseMotionEvent &event)
     {
+        /*
         int w;
         int h;
 
@@ -230,7 +237,7 @@ public:
         const float x = (float)event.x;
         const float y = (float)(h - event.y);
 
-        physics.select(camera.unProject(glm::vec2(x, y), glm::vec4(0.0f, 0.0f, 800.0f, 600.0f)), camera);
+        physics.select(camera.unProject(glm::vec2(x, y), glm::vec4(0.0f, 0.0f, 800.0f, 600.0f)), camera);*/
     }
     void renderScene(SDL_Window *window) override
     {
