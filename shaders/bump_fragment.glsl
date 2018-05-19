@@ -1,5 +1,12 @@
 #version 140
 
+struct Light
+{
+    vec3 position;
+    vec3 specular;
+    vec3 diffuse;
+};
+
 in vec3 ex_Position;
 in vec3 ex_Normal;
 in vec3 ex_Tangent;
@@ -17,9 +24,7 @@ uniform sampler2D material_Normal;
 uniform vec3 light_Ambient = vec3(0.2, 0.2, 0.2);
 uniform vec3 light_Diffuse = vec3(0.4, 0.4, 0.4);
 uniform vec3 light_Specular = vec3(0.4, 0.4, 0.4);
-uniform vec3 light_Position = vec3(0, 3, 0);
-
-uniform vec3 camera_Normal;
+uniform vec3 light_Position = vec3(0, 5, 0);
 
 void main(void)
 {

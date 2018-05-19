@@ -33,13 +33,16 @@ struct Selection
 
     void handle(const SDL_MouseButtonEvent &event)
     {
-        if(event.button == SDL_BUTTON_LEFT && event.state == SDL_PRESSED)
+        if(event.button == SDL_BUTTON_LEFT)
         {
-            a = b = glm::vec2(event.x, event.y);
-        }
-        else
-        {
-            a = b = glm::vec2(0, 0);
+            if(event.state == SDL_PRESSED)
+            {
+                a = b = glm::vec2(event.x, event.y);
+            }
+            else
+            {
+                a = b = glm::vec2(0, 0);
+            }
         }
         updateSprite();
     }
@@ -142,6 +145,8 @@ public:
             orthographic.projection(800, 600);
             renderer.projection(800, 600);
 
+            iconSprite.shape.square(-4, -4, 8, 8);
+            iconSprite.texture.load("images/icon.png");
             cube.load("models/cube.obj");
             floor.load("models/floor.obj");
             largeFont.load("fonts/NanumGothic-Regular.ttf", 22);
@@ -175,7 +180,6 @@ public:
 
                 entity.position = glm::vec3(x, 1.0f, z);
                 entity.model = &cube;
-                entity.physics = physics.createCube(glm::vec3(x, 5, z));
 
                 entities.push_back(entity);
             }
@@ -188,7 +192,6 @@ public:
 
             Entity physicsEntity;
             physicsEntity.name = "Middle";
-            physicsEntity.physics = physics.createCube(glm::vec3(0, 5, 0));
             physicsEntity.model = &cube;
             entities.push_back(physicsEntity);
 
@@ -208,6 +211,15 @@ public:
         {
             case SDL_MOUSEBUTTONDOWN:
                 selection.handle(event.button);
+                physics.select(
+                        camera.unProject(
+                                glm::vec2(
+                                        event.button.x,
+                                        event.button.y),
+                                glm::vec4(0.0f, 0.0f, 800.0f, 600.0f)
+                        ),
+                        camera
+                );
                 break;
             case SDL_MOUSEBUTTONUP:
                 selection.selectEntities(camera, entities);
@@ -253,12 +265,19 @@ public:
         orthographic.draw(sprite);
         for(const Entity &entity : entities)
         {
+            const glm::vec2 position = camera.project(entity.position, glm::vec4(0.0f, 0.0f, 800.0f, 600.0f));
+
             Sprite textSprite;
             textSprite.text(smallFont, entity.name.c_str());
-            textSprite.position = camera.project(entity.position, glm::vec4(0.0f, 0.0f, 800.0f, 600.0f));
+
+            textSprite.position = position;
             textSprite.position.x -= textSprite.texture.getW() / 2;
-            textSprite.position.y -= textSprite.texture.getH() / 2;
+            textSprite.position.y -= textSprite.texture.getH() / 2 + 16.0f;
+
             orthographic.draw(textSprite);
+
+            iconSprite.position = position;
+            orthographic.draw(iconSprite);
         }
         orthographic.draw(selection.fillSprite);
         orthographic.draw(selection.lineSprite);
@@ -278,6 +297,7 @@ protected:
 private:
     Orthographic orthographic;
     Renderer renderer;
+    Sprite iconSprite;
     Sprite sprite;
     Model cube;
     Model floor;
