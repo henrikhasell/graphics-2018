@@ -20,15 +20,15 @@ struct Selection
     Selection() : a(0, 0), b(0, 0)
     {
         fillSprite.texture.colour(
-                0.3f,
-                0.3f,
-                1.0f,
-                0.2f);
+            0.3f,
+            0.3f,
+            1.0f,
+            0.2f);
 
         lineSprite.texture.colour(
-                0.3f,
-                0.3f,
-                1.0f);
+            0.3f,
+            0.3f,
+            1.0f);
     }
 
     void handle(const SDL_MouseButtonEvent &event)
@@ -56,16 +56,16 @@ struct Selection
         }
     }
 
-    void selectEntities(const Camera &camera, const std::vector<Entity> &entities)
+    void selectEntities(const Camera &camera, const std::vector<Entity*> &entities)
     {
         selected.clear();
 
         const glm::vec2 min(a.x < b.x ? a.x : b.x, a.y < b.y ? a.y : b.y);
         const glm::vec2 max(a.x > b.x ? a.x : b.x, a.y > b.y ? a.y : b.y);
 
-        for(const Entity &entity : entities)
+        for(Entity *entity : entities)
         {
-            glm::vec2 projection = camera.project(entity.position, glm::vec4(0, 0, 800, 600));
+            glm::vec2 projection = camera.project(entity->position, glm::vec4(0, 0, 800, 600));
 
             if(projection.x < min.x || projection.x > max.x)
             {
@@ -77,7 +77,7 @@ struct Selection
                 continue;
             }
 
-            selected.push_back(&entity);
+            selected.push_back(entity);
         }
 
         for(const Entity *entity : selected)
@@ -104,7 +104,7 @@ struct Selection
     glm::vec2 a;
     glm::vec2 b;
 
-    std::list<const Entity*> selected;
+    std::list<Entity*> selected;
 };
 
 class Application
@@ -160,40 +160,41 @@ public:
                 const float x = sinf(angle) * radius;
                 const float z = cosf(angle) * radius;
 
-                Entity entity;
+                CommandEntity *entity = new CommandEntity();
 
                 switch(i)
                 {
-                    case 0: entity.name = "Alpha";
+                    case 0: entity->name = "Alpha";
                         break;
-                    case 1: entity.name = "Bravo";
+                    case 1: entity->name = "Bravo";
                         break;
-                    case 2: entity.name = "Charlie";
+                    case 2: entity->name = "Charlie";
                         break;
-                    case 3: entity.name = "Delta";
+                    case 3: entity->name = "Delta";
                         break;
-                    case 4: entity.name = "Echo";
+                    case 4: entity->name = "Echo";
                         break;
-                    case 5: entity.name = "Foxtrot";
+                    case 5: entity->name = "Foxtrot";
                         break;
                 }
 
-                entity.position = glm::vec3(x, 1.0f, z);
-                entity.model = &cube;
+                entity->target = entity->position = glm::vec3(x, 1.0f, z);
+                entity->model = &cube;
 
                 entities.push_back(entity);
             }
 
-            Entity floorEntity;
-            floorEntity.position = glm::vec3();
-            floorEntity.rotation = glm::quat();
-            floorEntity.model = &floor;
+            Entity *floorEntity = new Entity();
+            floorEntity->position = glm::vec3();
+            floorEntity->rotation = glm::quat();
+            floorEntity->model = &floor;
             entities.push_back(floorEntity);
 
-            Entity physicsEntity;
-            physicsEntity.name = "Middle";
-            physicsEntity.model = &cube;
-            entities.push_back(physicsEntity);
+            Entity *middleEntity = new Entity();
+            middleEntity->position = glm::vec3(0.0f, 1.0f, 0.0f);
+            middleEntity->name = "Middle";
+            middleEntity->model = &cube;
+            entities.push_back(middleEntity);
 
             sprite.text(largeFont, "Hello, world!");
             sprite.position.x = 0;
@@ -203,6 +204,10 @@ public:
     }
     ~BumpApplication() override
     {
+        for(const Entity *entity : entities)
+        {
+            delete entity;
+        }
         std::cout << "Destroying bump application..." << std::endl;
     }
     void handleEvent(const SDL_Event &event) override
@@ -212,22 +217,33 @@ public:
             case SDL_MOUSEBUTTONDOWN:
                 selection.handle(event.button);
                 physics.select(
-                        camera.unProject(
-                                glm::vec2(
-                                        event.button.x,
-                                        event.button.y),
-                                glm::vec4(0.0f, 0.0f, 800.0f, 600.0f)
-                        ),
-                        camera
+                    camera.unProject(
+                        glm::vec2(
+                            event.button.x,
+                            600 - event.button.y),
+                        glm::vec4(0.0f, 0.0f, 800.0f, 600.0f)
+                    ),
+                    camera
                 );
                 break;
             case SDL_MOUSEBUTTONUP:
-                selection.selectEntities(camera, entities);
+                switch(event.button.button)
+                {
+                    case SDL_BUTTON_LEFT:
+                        selection.selectEntities(camera, entities); break;
+                    case SDL_BUTTON_RIGHT:
+                    {
+                        const glm::vec3 target = physics.rayCollide();
+
+                        for(Entity *entity : selection.selected)
+                        {
+                            entity->move(target);
+                        }
+                    }
+                }
                 selection.handle(event.button);
                 break;
             case SDL_MOUSEMOTION:
-                selection.handle(event.motion);
-                camera.handle(event.motion);
                 handleEvent(event.motion);
                 break;
             case SDL_KEYDOWN:
@@ -240,35 +256,27 @@ public:
     }
     void handleEvent(const SDL_MouseMotionEvent &event)
     {
-        /*
-        int w;
-        int h;
-
-        SDL_GetWindowSize(SDL_GetWindowFromID(event.windowID), &w, &h);
-
-        const float x = (float)event.x;
-        const float y = (float)(h - event.y);
-
-        physics.select(camera.unProject(glm::vec2(x, y), glm::vec4(0.0f, 0.0f, 800.0f, 600.0f)), camera);*/
+        selection.handle(event);
+        camera.handle(event);
     }
     void renderScene(SDL_Window *window) override
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         renderer.begin();
         renderer.view(camera);
-        for(const Entity &entity : entities)
+        for(const Entity *entity : entities)
         {
-            renderer.draw(entity);
+            renderer.draw(*entity);
         }
         renderer.end();
         orthographic.begin();
         orthographic.draw(sprite);
-        for(const Entity &entity : entities)
+        for(const Entity *entity : entities)
         {
-            const glm::vec2 position = camera.project(entity.position, glm::vec4(0.0f, 0.0f, 800.0f, 600.0f));
+            const glm::vec2 position = camera.project(entity->position, glm::vec4(0.0f, 0.0f, 800.0f, 600.0f));
 
             Sprite textSprite;
-            textSprite.text(smallFont, entity.name.c_str());
+            textSprite.text(smallFont, entity->name.c_str());
 
             textSprite.position = position;
             textSprite.position.x -= textSprite.texture.getW() / 2;
@@ -287,11 +295,15 @@ public:
 protected:
     void step(const Uint8 *keyboardState) override
     {
+        int x;
+        int y;
+        SDL_GetMouseState(&x, &y);
+
         camera.handle(keyboardState);
         physics.step();
-        for(Entity &entity : entities)
+        for(Entity *entity : entities)
         {
-            entity.step();
+            entity->step();
         }
     }
 private:
@@ -305,7 +317,7 @@ private:
     Font smallFont;
     Camera camera;
     Physics physics;
-    std::vector<Entity> entities;
+    std::vector<Entity*> entities;
     Selection selection;
 };
 

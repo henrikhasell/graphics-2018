@@ -16,6 +16,7 @@ public:
     Physics();
     ~Physics();
     void step();
+    glm::vec3 rayCollide();
     void select(const glm::vec3 &position, const Camera &camera);
     dBodyID createCube(const glm::vec3 &position);
 private:

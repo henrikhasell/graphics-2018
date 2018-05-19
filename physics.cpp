@@ -78,6 +78,29 @@ void Physics::step()
     dJointGroupEmpty(contactGroup);
 }
 
+glm::vec3 Physics::rayCollide()
+{
+    dContact contact;
+
+    if(dCollide(selection, plane, 1, &contact.geom, sizeof(dContact)))
+    {
+        std::cout << "Ray is colliding at (" <<
+            contact.geom.pos[0] << ", " <<
+            contact.geom.pos[1] << ", " <<
+            contact.geom.pos[2] << ")" <<
+            std::endl;
+
+        return glm::vec3(
+            contact.geom.pos[0],
+            contact.geom.pos[1],
+            contact.geom.pos[2]);
+    }
+    else
+    {
+        return glm::vec3(0, 0, 0);
+    }
+}
+
 void Physics::select(const glm::vec3 &position, const Camera &camera)
 {
     const glm::vec3 direction = glm::normalize(position - camera.position);

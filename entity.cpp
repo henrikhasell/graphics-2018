@@ -1,4 +1,5 @@
 #include "entity.hpp"
+#include <iostream>
 
 Entity::Entity() :
     position(0, 0, 0),
@@ -26,7 +27,8 @@ CommandEntity::CommandEntity(float speed) :
 
 void CommandEntity::move(const glm::vec3 &target)
 {
-    this->target = target;
+    std::cout << "Setting target to " << target.x << std::endl;
+    this->target = glm::vec3(target.x, 1.0f, target.z);
 }
 
 void CommandEntity::step()

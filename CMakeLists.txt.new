@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.9)
+project("Rendering Engine Project")
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(ASSIMP REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2TTF REQUIRED)
+find_package(ODE REQUIRED)
+
+include_directories(${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS} ${ASSIMP_INCLUDE_DIRS} ${SDL2_INCLUDE_DIRS} ${ODE_INCLUDE_DIRS})
+
+add_executable(bump main.cpp application.hpp         camera.hpp         entity.hpp         font.hpp         material.hpp         mesh.hpp         model.hpp         orthographic.hpp         path.hpp         physics.hpp         program.hpp         renderer.hpp         shader.hpp         shape.hpp         sprite.hpp         texture.hpp         camera.cpp         font.cpp         main.cpp         mesh.cpp         model.cpp         orthographic.cpp         path.cpp         physics.cpp         program.cpp         renderer.cpp         shader.cpp         shape.cpp         sprite.cpp         texture.cpp)
+
+target_link_libraries(bump ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} ${ASSIMP_LIBRARIES} ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2TTF_LIBRARY} ${ODE_LIBRARIES})

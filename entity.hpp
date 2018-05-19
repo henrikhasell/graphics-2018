@@ -1,6 +1,7 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
+#include <iostream>
 #include <string>
 #include <glm/vec3.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -12,7 +13,7 @@ class Entity
 {
 public:
     Entity();
-    virtual void move(const glm::vec2 &target){};
+    virtual void move(const glm::vec3 &target){std::cout << "Base move." << std::endl;};
     virtual void step();
     glm::mat4 matrix() const;
 
@@ -25,11 +26,11 @@ public:
 class CommandEntity : public Entity
 {
 public:
-    CommandEntity(float speed = 1.0f);
+    CommandEntity(float speed = 0.2f);
     virtual void move(const glm::vec3 &target);
     virtual void step();
-private:
     glm::vec3 target;
+private:
     float speed;
 };
 
