@@ -20,13 +20,21 @@ public:
     std::string name;
     glm::vec3 position;
     glm::quat rotation;
+    dBodyID physics;
     Model *model;
+};
+
+enum CommandEntityState
+{
+    Idle,
+    Moving
 };
 
 class CommandEntity : public Entity
 {
 public:
-    CommandEntity(float speed = 0.2f);
+    CommandEntityState commandEntityState;
+    CommandEntity(float speed = 1.0f);
     virtual void move(const glm::vec3 &target);
     virtual void step();
     glm::vec3 target;

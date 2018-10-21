@@ -178,7 +178,8 @@ public:
                         break;
                 }
 
-                entity->target = entity->position = glm::vec3(x, 1.0f, z);
+                entity->target = entity->position = glm::vec3(x, 9.0f, z);
+                entity->physics = physics.createCube(entity->position);
                 entity->model = &cube;
 
                 entities.push_back(entity);
@@ -300,11 +301,11 @@ protected:
         SDL_GetMouseState(&x, &y);
 
         camera.handle(keyboardState);
-        physics.step();
         for(Entity *entity : entities)
         {
             entity->step();
         }
+        physics.step();
     }
 private:
     Orthographic orthographic;
